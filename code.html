@@ -1,0 +1,580 @@
+<!DOCTYPE html>
+<html lang="zh-CN" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>autoskills — 一条命令，让 AI 精通你的技术栈</title>
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            display: ['Sora', 'Noto Sans SC', 'system-ui', 'sans-serif'],
+            body: ['Noto Sans SC', 'system-ui', 'sans-serif'],
+            mono: ['JetBrains Mono', 'Fira Code', 'monospace'],
+          },
+        },
+      },
+    }
+  </script>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700;800&family=Noto+Sans+SC:wght@300;400;500;700;900&family=JetBrains+Mono:wght@300;400;500;600&display=swap" rel="stylesheet" />
+
+  <style>
+    ::selection { background: rgba(52,211,153,0.3); color: #fff; }
+    ::-webkit-scrollbar { width: 5px; }
+    ::-webkit-scrollbar-track { background: #09090B; }
+    ::-webkit-scrollbar-thumb { background: #27272A; border-radius: 3px; }
+
+    .grid-bg {
+      background-image:
+        linear-gradient(rgba(52,211,153,0.04) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(52,211,153,0.04) 1px, transparent 1px);
+      background-size: 64px 64px;
+    }
+
+    .dot-bg {
+      background-image: radial-gradient(rgba(255,255,255,0.04) 1px, transparent 1px);
+      background-size: 20px 20px;
+    }
+
+    .gradient-text {
+      background: linear-gradient(135deg, #34D399 0%, #6EE7B7 40%, #A78BFA 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .term-line {
+      opacity: 0;
+      animation: termFadeIn 0.4s ease forwards;
+    }
+
+    @keyframes termFadeIn {
+      from { opacity: 0; transform: translateY(4px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .reveal {
+      opacity: 0;
+      transform: translateY(28px);
+      transition: all 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  </style>
+</head>
+
+<body class="bg-[#09090B] text-zinc-100 font-body antialiased overflow-x-hidden">
+
+  <!-- ==================== NAV ==================== -->
+  <nav id="nav" class="fixed top-0 inset-x-0 z-50 transition-all duration-300">
+    <div class="max-w-6xl mx-auto px-5 h-16 flex items-center justify-between">
+      <a href="#" class="font-display font-extrabold text-lg tracking-tight">
+        auto<span class="text-emerald-400">skills</span>
+      </a>
+      <div class="hidden md:flex items-center gap-8 text-sm text-zinc-400">
+        <a href="#how" class="hover:text-zinc-100 transition-colors">工作原理</a>
+        <a href="#claude" class="hover:text-zinc-100 transition-colors">Claude Code</a>
+        <a href="#tech" class="hover:text-zinc-100 transition-colors">支持技术</a>
+        <a href="https://skills.sh" target="_blank"
+           class="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg bg-emerald-500/10 text-emerald-400 font-medium hover:bg-emerald-500/20 transition-colors">
+          skills.sh
+          <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M7 17L17 7M17 7H7M17 7v10"/></svg>
+        </a>
+      </div>
+    </div>
+  </nav>
+
+
+  <!-- ==================== HERO ==================== -->
+  <section class="relative pt-28 pb-20 lg:pt-36 lg:pb-28 grid-bg">
+    <div class="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[400px] bg-emerald-500/[0.07] rounded-full blur-[120px] pointer-events-none"></div>
+
+    <div class="relative max-w-6xl mx-auto px-5">
+      <div class="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
+
+        <!-- Left -->
+        <div>
+          <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-zinc-800 bg-zinc-900/60 text-xs text-zinc-500 font-mono mb-8">
+            <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 shadow-[0_0_6px_rgba(52,211,153,0.6)] animate-pulse"></span>
+            npx autoskills
+          </div>
+
+          <h1 class="font-display font-extrabold text-4xl sm:text-5xl lg:text-[3.5rem] leading-[1.1] tracking-tight mb-6">
+            一条命令<br />
+            让 AI <span class="gradient-text">精通你的技术栈</span>
+          </h1>
+
+          <p class="text-lg text-zinc-400 leading-relaxed max-w-lg mb-10 font-light">
+            扫描你的项目，自动检测技术栈，从 <a href="https://skills.sh" class="text-emerald-400/80 hover:text-emerald-400 underline underline-offset-2 decoration-emerald-400/30">skills.sh</a> 安装最佳 AI 代理技能。无需配置，即刻生效。
+          </p>
+
+          <button id="heroCmd"
+            class="group flex items-center gap-3 px-5 py-3.5 rounded-xl border border-zinc-800 bg-zinc-900/80 font-mono text-base hover:border-emerald-500/40 hover:bg-emerald-500/[0.04] transition-all duration-300 cursor-pointer mb-8">
+            <span class="text-emerald-400">$</span>
+            <span class="text-zinc-200">npx autoskills</span>
+            <span id="copyIcon" class="ml-auto text-zinc-600 group-hover:text-emerald-400 transition-colors text-sm">复制</span>
+          </button>
+
+          <div class="flex flex-wrap gap-3">
+            <a href="https://autoskills.sh" target="_blank"
+               class="inline-flex items-center gap-2 px-6 py-3 rounded-lg bg-emerald-500 text-[#09090B] font-semibold text-sm hover:bg-emerald-400 transition-all hover:shadow-[0_8px_30px_rgba(52,211,153,0.25)] hover:-translate-y-0.5">
+              访问官网
+              <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path d="M7 17L17 7M17 7H7M17 7v10"/></svg>
+            </a>
+            <a href="#how"
+               class="inline-flex items-center gap-2 px-6 py-3 rounded-lg border border-zinc-800 text-zinc-300 font-medium text-sm hover:border-zinc-700 hover:bg-zinc-900 transition-all hover:-translate-y-0.5">
+              了解原理 ↓
+            </a>
+          </div>
+        </div>
+
+        <!-- Right: Terminal -->
+        <div class="relative">
+          <div class="absolute -inset-4 bg-emerald-500/[0.04] rounded-2xl blur-2xl"></div>
+          <div class="relative rounded-xl border border-zinc-800/80 bg-[#0C0C0E] overflow-hidden shadow-2xl">
+            <div class="flex items-center gap-2 px-4 py-3 border-b border-zinc-800/60 bg-[#111113]">
+              <span class="w-3 h-3 rounded-full bg-[#FF5F57]/80"></span>
+              <span class="w-3 h-3 rounded-full bg-[#FEBC2E]/80"></span>
+              <span class="w-3 h-3 rounded-full bg-[#28C840]/80"></span>
+              <span class="ml-3 text-[11px] text-zinc-600 font-mono">~/my-project</span>
+            </div>
+            <div class="p-5 font-mono text-[13px] leading-[1.9]">
+              <div class="term-line" style="animation-delay:.3s">
+                <span class="text-zinc-500">$</span><span class="text-emerald-400"> npx autoskills</span>
+              </div>
+              <div class="term-line" style="animation-delay:.7s">
+                <span class="text-zinc-500">  Scanning project...</span>
+              </div>
+              <div class="term-line" style="animation-delay:.95s">
+                <span class="text-emerald-400">  ✓</span> <span class="text-zinc-300">package.json</span>
+              </div>
+              <div class="term-line" style="animation-delay:1.1s">
+                <span class="text-emerald-400">  ✓</span> <span class="text-zinc-300">tsconfig.json</span>
+              </div>
+              <div class="term-line" style="animation-delay:1.25s">
+                <span class="text-emerald-400">  ✓</span> <span class="text-zinc-300">next.config.ts</span>
+              </div>
+              <div class="term-line" style="animation-delay:1.5s"><span class="text-zinc-500"></span></div>
+              <div class="term-line" style="animation-delay:1.7s">
+                <span class="text-zinc-500">  Detected:</span> <span class="text-zinc-200">React · Next.js · TypeScript · Tailwind CSS</span>
+              </div>
+              <div class="term-line" style="animation-delay:2.0s"><span class="text-zinc-500"></span></div>
+              <div class="term-line" style="animation-delay:2.2s">
+                <span class="text-zinc-500">  Installing skills from skills.sh...</span>
+              </div>
+              <div class="term-line" style="animation-delay:2.45s">
+                <span class="text-emerald-400">  ✓</span> <span class="text-zinc-300">react-best-practices</span>
+              </div>
+              <div class="term-line" style="animation-delay:2.6s">
+                <span class="text-emerald-400">  ✓</span> <span class="text-zinc-300">nextjs-app-router</span>
+              </div>
+              <div class="term-line" style="animation-delay:2.75s">
+                <span class="text-emerald-400">  ✓</span> <span class="text-zinc-300">typescript-patterns</span>
+              </div>
+              <div class="term-line" style="animation-delay:2.9s">
+                <span class="text-emerald-400">  ✓</span> <span class="text-zinc-300">tailwind-utilities</span>
+              </div>
+              <div class="term-line" style="animation-delay:3.15s"><span class="text-zinc-500"></span></div>
+              <div class="term-line" style="animation-delay:3.35s">
+                <span class="text-zinc-500">  Generating CLAUDE.md...</span>
+              </div>
+              <div class="term-line" style="animation-delay:3.55s">
+                <span class="text-emerald-400">  ✓</span> <span class="text-zinc-300">Written to project root</span>
+              </div>
+              <div class="term-line" style="animation-delay:3.8s"><span class="text-zinc-500"></span></div>
+              <div class="term-line font-semibold" style="animation-delay:4.0s">
+                <span class="text-emerald-400">  Done!</span> <span class="text-zinc-200">4 skills installed.</span>
+                <span class="inline-block w-[7px] h-[15px] bg-emerald-400 ml-1 animate-pulse align-middle"></span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ==================== WHY ==================== -->
+  <section class="py-24 lg:py-32 border-t border-zinc-800/50">
+    <div class="max-w-6xl mx-auto px-5">
+      <div class="text-center max-w-2xl mx-auto reveal">
+        <p class="font-mono text-xs text-emerald-400 tracking-widest uppercase mb-4">为什么需要 autoskills</p>
+        <h2 class="font-display font-bold text-3xl lg:text-4xl tracking-tight mb-5">
+          AI 助手很强大，但它不了解<span class="text-zinc-500">你的</span>项目
+        </h2>
+        <p class="text-zinc-400 leading-relaxed text-lg font-light">
+          你的 AI 编码助手可以写代码，但它不知道 React 19 的新特性、Next.js App Router 的约定、或者 Prisma 的查询最佳实践。每次对话，你都在重复解释相同的上下文。
+        </p>
+      </div>
+
+      <div class="grid md:grid-cols-2 gap-6 mt-16 reveal">
+        <div class="rounded-xl border border-zinc-800/60 bg-zinc-900/30 p-6 lg:p-8">
+          <div class="flex items-center gap-2 mb-5">
+            <span class="w-2 h-2 rounded-full bg-zinc-600"></span>
+            <span class="font-mono text-xs text-zinc-500 uppercase tracking-wider">没有 autoskills</span>
+          </div>
+          <div class="space-y-3 font-mono text-sm">
+            <div class="flex gap-3">
+              <span class="text-zinc-600 shrink-0">你:</span>
+              <span class="text-zinc-500">帮我用 React 写一个表单组件</span>
+            </div>
+            <div class="flex gap-3">
+              <span class="text-zinc-600 shrink-0">AI:</span>
+              <span class="text-zinc-500 leading-relaxed">好的，这是一个使用 useState 的基本表单组件……<span class="text-zinc-700">(通用回答，不考虑你的项目规范)</span></span>
+            </div>
+          </div>
+        </div>
+        <div class="rounded-xl border border-emerald-500/20 bg-emerald-500/[0.03] p-6 lg:p-8">
+          <div class="flex items-center gap-2 mb-5">
+            <span class="w-2 h-2 rounded-full bg-emerald-400 shadow-[0_0_6px_rgba(52,211,153,0.5)]"></span>
+            <span class="font-mono text-xs text-emerald-400/80 uppercase tracking-wider">有了 autoskills</span>
+          </div>
+          <div class="space-y-3 font-mono text-sm">
+            <div class="flex gap-3">
+              <span class="text-zinc-500 shrink-0">你:</span>
+              <span class="text-zinc-300">帮我用 React 写一个表单组件</span>
+            </div>
+            <div class="flex gap-3">
+              <span class="text-emerald-400/70 shrink-0">AI:</span>
+              <span class="text-zinc-200 leading-relaxed">根据项目规范，推荐使用 React Hook Form + Zod 验证，搭配 shadcn/ui 的 Form 组件……<span class="text-emerald-400/50">(针对你的技术栈)</span></span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ==================== HOW IT WORKS ==================== -->
+  <section id="how" class="py-24 lg:py-32 bg-[#0D0D0F] border-y border-zinc-800/40 dot-bg">
+    <div class="max-w-6xl mx-auto px-5">
+      <div class="reveal">
+        <p class="font-mono text-xs text-emerald-400 tracking-widest uppercase mb-4">工作原理</p>
+        <h2 class="font-display font-bold text-3xl lg:text-4xl tracking-tight mb-3">四步完成，零配置</h2>
+        <p class="text-zinc-400 text-lg font-light max-w-xl">从运行命令到技能就绪，整个过程完全自动化。</p>
+      </div>
+
+      <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-5 mt-14">
+        <div class="group relative rounded-xl border border-zinc-800/60 bg-[#09090B] p-6 hover:border-emerald-500/30 transition-all duration-300 reveal">
+          <span class="font-display text-5xl font-extrabold text-zinc-800/80 group-hover:text-emerald-500/20 transition-colors leading-none">01</span>
+          <h3 class="font-display font-bold text-lg mt-4 mb-2">运行命令</h3>
+          <p class="text-zinc-500 text-sm leading-relaxed">在项目根目录执行 <code class="text-emerald-400/80 font-mono text-xs">npx autoskills</code></p>
+        </div>
+        <div class="group relative rounded-xl border border-zinc-800/60 bg-[#09090B] p-6 hover:border-emerald-500/30 transition-all duration-300 reveal">
+          <span class="font-display text-5xl font-extrabold text-zinc-800/80 group-hover:text-emerald-500/20 transition-colors leading-none">02</span>
+          <h3 class="font-display font-bold text-lg mt-4 mb-2">智能检测</h3>
+          <p class="text-zinc-500 text-sm leading-relaxed">扫描 <code class="text-sky-400/80 font-mono text-xs">package.json</code>、Gradle 文件及各类配置文件</p>
+        </div>
+        <div class="group relative rounded-xl border border-zinc-800/60 bg-[#09090B] p-6 hover:border-emerald-500/30 transition-all duration-300 reveal">
+          <span class="font-display text-5xl font-extrabold text-zinc-800/80 group-hover:text-emerald-500/20 transition-colors leading-none">03</span>
+          <h3 class="font-display font-bold text-lg mt-4 mb-2">安装技能</h3>
+          <p class="text-zinc-500 text-sm leading-relaxed">从 <a href="https://skills.sh" class="text-emerald-400/80 hover:text-emerald-400">skills.sh</a> 匹配并安装最佳 AI 技能</p>
+        </div>
+        <div class="group relative rounded-xl border border-zinc-800/60 bg-[#09090B] p-6 hover:border-emerald-500/30 transition-all duration-300 reveal">
+          <span class="font-display text-5xl font-extrabold text-zinc-800/80 group-hover:text-emerald-500/20 transition-colors leading-none">04</span>
+          <h3 class="font-display font-bold text-lg mt-4 mb-2">即刻生效</h3>
+          <p class="text-zinc-500 text-sm leading-relaxed">AI 助手自动获得项目专属知识，无需额外操作</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ==================== CLAUDE CODE ==================== -->
+  <section id="claude" class="py-24 lg:py-32">
+    <div class="max-w-6xl mx-auto px-5">
+      <div class="grid lg:grid-cols-5 gap-12 lg:gap-16 items-center">
+
+        <div class="lg:col-span-2 reveal">
+          <p class="font-mono text-xs text-emerald-400 tracking-widest uppercase mb-4">Claude Code 集成</p>
+          <h2 class="font-display font-bold text-3xl lg:text-4xl tracking-tight mb-5">
+            为 Claude Code<br />深度集成
+          </h2>
+          <p class="text-zinc-400 leading-relaxed mb-6 font-light">
+            当自动检测到 Claude Code 或通过 <code class="text-emerald-400/80 font-mono text-sm">-a</code> 参数指定时，autoskills 会在项目根目录生成 <code class="text-violet-400/80 font-mono text-sm">CLAUDE.md</code> 摘要文件。
+          </p>
+          <ul class="space-y-3">
+            <li class="flex items-start gap-3 text-zinc-400 text-sm">
+              <span class="text-emerald-400 mt-0.5 shrink-0">→</span>
+              自动检测 Claude Code 环境
+            </li>
+            <li class="flex items-start gap-3 text-zinc-400 text-sm">
+              <span class="text-emerald-400 mt-0.5 shrink-0">→</span>
+              汇总所有已安装的 Markdown 技能文件
+            </li>
+            <li class="flex items-start gap-3 text-zinc-400 text-sm">
+              <span class="text-emerald-400 mt-0.5 shrink-0">→</span>
+              生成结构化的技能摘要
+            </li>
+            <li class="flex items-start gap-3 text-zinc-400 text-sm">
+              <span class="text-emerald-400 mt-0.5 shrink-0">→</span>
+              Claude 即刻获得项目技能上下文
+            </li>
+          </ul>
+        </div>
+
+        <div class="lg:col-span-3 reveal">
+          <div class="rounded-xl border border-zinc-800/60 bg-[#0C0C0E] overflow-hidden">
+            <div class="flex items-center gap-2 px-4 py-2.5 border-b border-zinc-800/60 bg-[#111113]">
+              <div class="flex items-center gap-1.5 px-3 py-1 rounded-md bg-zinc-800/40 text-xs text-zinc-400 font-mono">
+                <span class="text-violet-400">◆</span>
+                CLAUDE.md
+              </div>
+            </div>
+            <div class="p-6 font-mono text-[13px] leading-[2] text-zinc-400">
+              <div><span class="text-zinc-200 font-semibold"># 项目 AI 技能摘要</span></div>
+              <div class="mt-3"><span class="text-zinc-600">## 已安装技能</span></div>
+              <div><span class="text-zinc-500">- </span><span class="text-emerald-400/80">react-best-practices.md</span></div>
+              <div><span class="text-zinc-500">- </span><span class="text-emerald-400/80">nextjs-app-router.md</span></div>
+              <div><span class="text-zinc-500">- </span><span class="text-emerald-400/80">typescript-patterns.md</span></div>
+              <div><span class="text-zinc-500">- </span><span class="text-emerald-400/80">tailwind-utilities.md</span></div>
+              <div class="mt-3"><span class="text-zinc-600">## 检测到的技术栈</span></div>
+              <div><span class="text-zinc-300">React 19, Next.js 15, TypeScript 5.7, Tailwind CSS 4</span></div>
+              <div class="mt-3"><span class="text-zinc-600">## 使用提示</span></div>
+              <div><span class="text-zinc-400">请参考上述技能文件中的最佳实践</span></div>
+              <div><span class="text-zinc-400">进行代码编写和架构设计。</span></div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ==================== OPTIONS ==================== -->
+  <section class="py-24 lg:py-32 border-t border-zinc-800/40 bg-[#0D0D0F]">
+    <div class="max-w-6xl mx-auto px-5">
+      <div class="reveal">
+        <p class="font-mono text-xs text-emerald-400 tracking-widest uppercase mb-4">命令选项</p>
+        <h2 class="font-display font-bold text-3xl lg:text-4xl tracking-tight">灵活可控</h2>
+      </div>
+
+      <div class="grid sm:grid-cols-3 gap-5 mt-12">
+        <div class="rounded-xl border border-zinc-800/60 bg-[#09090B] p-6 reveal">
+          <code class="inline-block px-2.5 py-1 rounded-md bg-emerald-500/10 text-emerald-400 font-mono text-xs font-medium mb-4">-y, --yes</code>
+          <h3 class="font-display font-bold mb-2">跳过确认</h3>
+          <p class="text-zinc-500 text-sm leading-relaxed">跳过安装确认提示，直接执行。适合 CI/CD 或批量操作。</p>
+        </div>
+        <div class="rounded-xl border border-zinc-800/60 bg-[#09090B] p-6 reveal">
+          <code class="inline-block px-2.5 py-1 rounded-md bg-emerald-500/10 text-emerald-400 font-mono text-xs font-medium mb-4">--dry-run</code>
+          <h3 class="font-display font-bold mb-2">预览模式</h3>
+          <p class="text-zinc-500 text-sm leading-relaxed">仅展示将要安装的技能，不实际安装。安装前确认匹配结果。</p>
+        </div>
+        <div class="rounded-xl border border-zinc-800/60 bg-[#09090B] p-6 reveal">
+          <code class="inline-block px-2.5 py-1 rounded-md bg-emerald-500/10 text-emerald-400 font-mono text-xs font-medium mb-4">-h, --help</code>
+          <h3 class="font-display font-bold mb-2">帮助信息</h3>
+          <p class="text-zinc-500 text-sm leading-relaxed">显示完整的帮助文档和使用说明。</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ==================== TECH STACK — COMPACT ==================== -->
+  <section id="tech" class="py-24 lg:py-32">
+    <div class="max-w-6xl mx-auto px-5">
+      <div class="reveal">
+        <p class="font-mono text-xs text-emerald-400 tracking-widest uppercase mb-4">支持的技术</p>
+        <h2 class="font-display font-bold text-3xl lg:text-4xl tracking-tight mb-3">覆盖现代全栈技术生态</h2>
+        <p class="text-zinc-400 text-lg font-light max-w-xl">从前端到云端，从移动端到多媒体，全面覆盖你的技术栈。</p>
+      </div>
+
+      <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 mt-14">
+
+        <!-- Card -->
+        <div class="group rounded-xl border border-zinc-800/60 bg-[#0C0C0E] p-5 hover:border-emerald-500/20 transition-all duration-300 reveal">
+          <div class="flex items-center justify-between mb-3">
+            <span class="font-display font-bold text-sm">框架与 UI</span>
+            <span class="text-[11px] font-mono text-zinc-600 bg-zinc-800/50 px-2 py-0.5 rounded">11 项</span>
+          </div>
+          <p class="text-zinc-500 text-xs leading-relaxed">React · Next.js · Vue · Nuxt · Svelte · Angular · Astro · Tailwind CSS · shadcn/ui · GSAP · Three.js</p>
+        </div>
+
+        <div class="group rounded-xl border border-zinc-800/60 bg-[#0C0C0E] p-5 hover:border-emerald-500/20 transition-all duration-300 reveal">
+          <div class="flex items-center justify-between mb-3">
+            <span class="font-display font-bold text-sm">语言与运行时</span>
+            <span class="text-[11px] font-mono text-zinc-600 bg-zinc-800/50 px-2 py-0.5 rounded">6 项</span>
+          </div>
+          <p class="text-zinc-500 text-xs leading-relaxed">TypeScript · Node.js · Go · Bun · Deno · Dart</p>
+        </div>
+
+        <div class="group rounded-xl border border-zinc-800/60 bg-[#0C0C0E] p-5 hover:border-emerald-500/20 transition-all duration-300 reveal">
+          <div class="flex items-center justify-between mb-3">
+            <span class="font-display font-bold text-sm">后端与 API</span>
+            <span class="text-[11px] font-mono text-zinc-600 bg-zinc-800/50 px-2 py-0.5 rounded">4 项</span>
+          </div>
+          <p class="text-zinc-500 text-xs leading-relaxed">Express · Hono · NestJS · Spring Boot</p>
+        </div>
+
+        <div class="group rounded-xl border border-zinc-800/60 bg-[#0C0C0E] p-5 hover:border-emerald-500/20 transition-all duration-300 reveal">
+          <div class="flex items-center justify-between mb-3">
+            <span class="font-display font-bold text-sm">移动端与桌面端</span>
+            <span class="text-[11px] font-mono text-zinc-600 bg-zinc-800/50 px-2 py-0.5 rounded">8 项</span>
+          </div>
+          <p class="text-zinc-500 text-xs leading-relaxed">Expo · React Native · Flutter · SwiftUI · Android · Kotlin Multiplatform · Tauri · Electron</p>
+        </div>
+
+        <div class="group rounded-xl border border-zinc-800/60 bg-[#0C0C0E] p-5 hover:border-emerald-500/20 transition-all duration-300 reveal">
+          <div class="flex items-center justify-between mb-3">
+            <span class="font-display font-bold text-sm">数据与存储</span>
+            <span class="text-[11px] font-mono text-zinc-600 bg-zinc-800/50 px-2 py-0.5 rounded">6 项</span>
+          </div>
+          <p class="text-zinc-500 text-xs leading-relaxed">Supabase · Neon · Prisma · Drizzle ORM · Zod · React Hook Form</p>
+        </div>
+
+        <div class="group rounded-xl border border-zinc-800/60 bg-[#0C0C0E] p-5 hover:border-emerald-500/20 transition-all duration-300 reveal">
+          <div class="flex items-center justify-between mb-3">
+            <span class="font-display font-bold text-sm">认证与支付</span>
+            <span class="text-[11px] font-mono text-zinc-600 bg-zinc-800/50 px-2 py-0.5 rounded">3 项</span>
+          </div>
+          <p class="text-zinc-500 text-xs leading-relaxed">Better Auth · Clerk · Stripe</p>
+        </div>
+
+        <div class="group rounded-xl border border-zinc-800/60 bg-[#0C0C0E] p-5 hover:border-emerald-500/20 transition-all duration-300 reveal">
+          <div class="flex items-center justify-between mb-3">
+            <span class="font-display font-bold text-sm">测试</span>
+            <span class="text-[11px] font-mono text-zinc-600 bg-zinc-800/50 px-2 py-0.5 rounded">2 项</span>
+          </div>
+          <p class="text-zinc-500 text-xs leading-relaxed">Vitest · Playwright</p>
+        </div>
+
+        <div class="group rounded-xl border border-zinc-800/60 bg-[#0C0C0E] p-5 hover:border-emerald-500/20 transition-all duration-300 reveal">
+          <div class="flex items-center justify-between mb-3">
+            <span class="font-display font-bold text-sm">云端与基础设施</span>
+            <span class="text-[11px] font-mono text-zinc-600 bg-zinc-800/50 px-2 py-0.5 rounded">9 项</span>
+          </div>
+          <p class="text-zinc-500 text-xs leading-relaxed">Vercel · Vercel AI SDK · Cloudflare · Durable Objects · Cloudflare Agents · Cloudflare AI · AWS · Azure · Terraform</p>
+        </div>
+
+        <div class="group rounded-xl border border-zinc-800/60 bg-[#0C0C0E] p-5 hover:border-emerald-500/20 transition-all duration-300 reveal">
+          <div class="flex items-center justify-between mb-3">
+            <span class="font-display font-bold text-sm">工具链 / 多媒体</span>
+            <span class="text-[11px] font-mono text-zinc-600 bg-zinc-800/50 px-2 py-0.5 rounded">5 项</span>
+          </div>
+          <p class="text-zinc-500 text-xs leading-relaxed">Turborepo · Vite · oxlint · Remotion · ElevenLabs</p>
+        </div>
+
+      </div>
+
+      <!-- Total count -->
+      <div class="mt-10 text-center reveal">
+        <span class="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-zinc-800/60 bg-zinc-900/40 text-sm text-zinc-500 font-mono">
+          共计 <span class="text-emerald-400 font-semibold">54+</span> 项技术，持续增长中
+        </span>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ==================== REQUIREMENTS ==================== -->
+  <section class="py-20 border-t border-zinc-800/40 bg-[#0D0D0F]">
+    <div class="max-w-6xl mx-auto px-5">
+      <div class="grid sm:grid-cols-2 gap-6">
+        <div class="rounded-xl border border-zinc-800/60 bg-[#09090B] p-7 reveal">
+          <div class="font-display text-2xl mb-3">⬡</div>
+          <h3 class="font-display font-bold text-lg mb-2">环境要求</h3>
+          <p class="text-zinc-500 text-sm leading-relaxed">
+            需要 <code class="text-emerald-400/80 font-mono text-xs">Node.js >= 22</code>。建议使用最新的 LTS 版本。
+          </p>
+        </div>
+        <div class="rounded-xl border border-zinc-800/60 bg-[#09090B] p-7 reveal">
+          <div class="font-display text-2xl mb-3">◈</div>
+          <h3 class="font-display font-bold text-lg mb-2">开源许可</h3>
+          <p class="text-zinc-500 text-sm leading-relaxed">
+            <code class="text-emerald-400/80 font-mono text-xs">CC BY-NC 4.0</code> · 由 <a href="https://midu.dev" target="_blank" class="text-zinc-300 hover:text-emerald-400 transition-colors underline underline-offset-2 decoration-zinc-700">midudev</a> 创建
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ==================== CTA ==================== -->
+  <section class="py-24 lg:py-32 relative overflow-hidden">
+    <div class="absolute inset-0 bg-gradient-to-b from-emerald-500/[0.04] to-transparent pointer-events-none"></div>
+    <div class="relative max-w-6xl mx-auto px-5 text-center reveal">
+      <h2 class="font-display font-extrabold text-3xl lg:text-5xl tracking-tight mb-5">
+        让你的 AI 更懂你的项目
+      </h2>
+      <p class="text-zinc-400 text-lg font-light max-w-md mx-auto mb-10">
+        一条命令，即刻开始。
+      </p>
+      <button onclick="navigator.clipboard.writeText('npx autoskills')"
+        class="inline-flex items-center gap-3 px-8 py-4 rounded-xl bg-emerald-500 text-[#09090B] font-display font-bold text-lg hover:bg-emerald-400 transition-all hover:shadow-[0_12px_40px_rgba(52,211,153,0.3)] hover:-translate-y-1 cursor-pointer">
+        <span class="font-mono text-base opacity-70">$</span>
+        npx autoskills
+      </button>
+    </div>
+  </section>
+
+
+  <!-- ==================== FOOTER ==================== -->
+  <footer class="border-t border-zinc-800/40 py-10">
+    <div class="max-w-6xl mx-auto px-5 flex flex-col items-center gap-5">
+      <a href="#" class="font-display font-extrabold text-lg tracking-tight">
+        auto<span class="text-emerald-400">skills</span>
+      </a>
+      <div class="flex items-center gap-6 text-sm text-zinc-600">
+        <a href="https://autoskills.sh" target="_blank" class="hover:text-zinc-300 transition-colors">官网</a>
+        <a href="https://skills.sh" target="_blank" class="hover:text-zinc-300 transition-colors">skills.sh</a>
+        <a href="https://midu.dev" target="_blank" class="hover:text-zinc-300 transition-colors">midudev</a>
+      </div>
+      <p class="text-xs text-zinc-700 font-mono">
+        CC BY-NC 4.0 · <a href="https://midu.dev" target="_blank" class="hover:text-zinc-500 transition-colors">midudev</a>
+      </p>
+    </div>
+  </footer>
+
+
+  <!-- ==================== SCRIPTS ==================== -->
+  <script>
+    const nav = document.getElementById('nav');
+    window.addEventListener('scroll', () => {
+      if (window.scrollY > 40) {
+        nav.style.background = 'rgba(9,9,11,0.85)';
+        nav.style.backdropFilter = 'blur(16px) saturate(1.4)';
+        nav.style.borderBottom = '1px solid rgba(39,39,42,0.5)';
+      } else {
+        nav.style.background = 'transparent';
+        nav.style.backdropFilter = 'none';
+        nav.style.borderBottom = '1px solid transparent';
+      }
+    });
+
+    const heroCmd = document.getElementById('heroCmd');
+    const copyIcon = document.getElementById('copyIcon');
+    heroCmd.addEventListener('click', () => {
+      navigator.clipboard.writeText('npx autoskills').then(() => {
+        copyIcon.textContent = '已复制 ✓';
+        copyIcon.style.color = '#34D399';
+        setTimeout(() => {
+          copyIcon.textContent = '复制';
+          copyIcon.style.color = '';
+        }, 1800);
+      });
+    });
+
+    const revealEls = document.querySelectorAll('.reveal');
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry, i) => {
+        if (entry.isIntersecting) {
+          setTimeout(() => entry.target.classList.add('visible'), i * 60);
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.08, rootMargin: '0px 0px -30px 0px' });
+    revealEls.forEach(el => observer.observe(el));
+  </script>
+
+</body>
+</html>
