@@ -68,6 +68,17 @@
       opacity: 1;
       transform: translateY(0);
     }
+
+    /* GitHub star badge animation */
+    @keyframes shimmer {
+      0% { background-position: -200% 0; }
+      100% { background-position: 200% 0; }
+    }
+    .gh-shimmer {
+      background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.06) 50%, transparent 100%);
+      background-size: 200% 100%;
+      animation: shimmer 3s ease-in-out infinite;
+    }
   </style>
 </head>
 
@@ -79,10 +90,15 @@
       <a href="#" class="font-display font-extrabold text-lg tracking-tight">
         auto<span class="text-emerald-400">skills</span>
       </a>
-      <div class="hidden md:flex items-center gap-8 text-sm text-zinc-400">
+      <div class="hidden md:flex items-center gap-6 text-sm text-zinc-400">
         <a href="#how" class="hover:text-zinc-100 transition-colors">工作原理</a>
         <a href="#claude" class="hover:text-zinc-100 transition-colors">Claude Code</a>
         <a href="#tech" class="hover:text-zinc-100 transition-colors">支持技术</a>
+        <a href="https://github.com/midudev/autoskills" target="_blank"
+           class="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-lg border border-zinc-800 text-zinc-300 hover:border-zinc-700 hover:bg-zinc-900 transition-colors">
+          <svg class="w-4 h-4" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
+          GitHub
+        </a>
         <a href="https://skills.sh" target="_blank"
            class="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg bg-emerald-500/10 text-emerald-400 font-medium hover:bg-emerald-500/20 transition-colors">
           skills.sh
@@ -128,6 +144,11 @@
                class="inline-flex items-center gap-2 px-6 py-3 rounded-lg bg-emerald-500 text-[#09090B] font-semibold text-sm hover:bg-emerald-400 transition-all hover:shadow-[0_8px_30px_rgba(52,211,153,0.25)] hover:-translate-y-0.5">
               访问官网
               <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path d="M7 17L17 7M17 7H7M17 7v10"/></svg>
+            </a>
+            <a href="https://github.com/midudev/autoskills" target="_blank"
+               class="inline-flex items-center gap-2 px-6 py-3 rounded-lg border border-zinc-800 text-zinc-300 font-medium text-sm hover:border-zinc-700 hover:bg-zinc-900 transition-all hover:-translate-y-0.5">
+              <svg class="w-4 h-4" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
+              GitHub
             </a>
             <a href="#how"
                class="inline-flex items-center gap-2 px-6 py-3 rounded-lg border border-zinc-800 text-zinc-300 font-medium text-sm hover:border-zinc-700 hover:bg-zinc-900 transition-all hover:-translate-y-0.5">
@@ -390,8 +411,6 @@
       </div>
 
       <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 mt-14">
-
-        <!-- Card -->
         <div class="group rounded-xl border border-zinc-800/60 bg-[#0C0C0E] p-5 hover:border-emerald-500/20 transition-all duration-300 reveal">
           <div class="flex items-center justify-between mb-3">
             <span class="font-display font-bold text-sm">框架与 UI</span>
@@ -399,7 +418,6 @@
           </div>
           <p class="text-zinc-500 text-xs leading-relaxed">React · Next.js · Vue · Nuxt · Svelte · Angular · Astro · Tailwind CSS · shadcn/ui · GSAP · Three.js</p>
         </div>
-
         <div class="group rounded-xl border border-zinc-800/60 bg-[#0C0C0E] p-5 hover:border-emerald-500/20 transition-all duration-300 reveal">
           <div class="flex items-center justify-between mb-3">
             <span class="font-display font-bold text-sm">语言与运行时</span>
@@ -407,7 +425,6 @@
           </div>
           <p class="text-zinc-500 text-xs leading-relaxed">TypeScript · Node.js · Go · Bun · Deno · Dart</p>
         </div>
-
         <div class="group rounded-xl border border-zinc-800/60 bg-[#0C0C0E] p-5 hover:border-emerald-500/20 transition-all duration-300 reveal">
           <div class="flex items-center justify-between mb-3">
             <span class="font-display font-bold text-sm">后端与 API</span>
@@ -415,7 +432,6 @@
           </div>
           <p class="text-zinc-500 text-xs leading-relaxed">Express · Hono · NestJS · Spring Boot</p>
         </div>
-
         <div class="group rounded-xl border border-zinc-800/60 bg-[#0C0C0E] p-5 hover:border-emerald-500/20 transition-all duration-300 reveal">
           <div class="flex items-center justify-between mb-3">
             <span class="font-display font-bold text-sm">移动端与桌面端</span>
@@ -423,7 +439,6 @@
           </div>
           <p class="text-zinc-500 text-xs leading-relaxed">Expo · React Native · Flutter · SwiftUI · Android · Kotlin Multiplatform · Tauri · Electron</p>
         </div>
-
         <div class="group rounded-xl border border-zinc-800/60 bg-[#0C0C0E] p-5 hover:border-emerald-500/20 transition-all duration-300 reveal">
           <div class="flex items-center justify-between mb-3">
             <span class="font-display font-bold text-sm">数据与存储</span>
@@ -431,7 +446,6 @@
           </div>
           <p class="text-zinc-500 text-xs leading-relaxed">Supabase · Neon · Prisma · Drizzle ORM · Zod · React Hook Form</p>
         </div>
-
         <div class="group rounded-xl border border-zinc-800/60 bg-[#0C0C0E] p-5 hover:border-emerald-500/20 transition-all duration-300 reveal">
           <div class="flex items-center justify-between mb-3">
             <span class="font-display font-bold text-sm">认证与支付</span>
@@ -439,7 +453,6 @@
           </div>
           <p class="text-zinc-500 text-xs leading-relaxed">Better Auth · Clerk · Stripe</p>
         </div>
-
         <div class="group rounded-xl border border-zinc-800/60 bg-[#0C0C0E] p-5 hover:border-emerald-500/20 transition-all duration-300 reveal">
           <div class="flex items-center justify-between mb-3">
             <span class="font-display font-bold text-sm">测试</span>
@@ -447,7 +460,6 @@
           </div>
           <p class="text-zinc-500 text-xs leading-relaxed">Vitest · Playwright</p>
         </div>
-
         <div class="group rounded-xl border border-zinc-800/60 bg-[#0C0C0E] p-5 hover:border-emerald-500/20 transition-all duration-300 reveal">
           <div class="flex items-center justify-between mb-3">
             <span class="font-display font-bold text-sm">云端与基础设施</span>
@@ -455,7 +467,6 @@
           </div>
           <p class="text-zinc-500 text-xs leading-relaxed">Vercel · Vercel AI SDK · Cloudflare · Durable Objects · Cloudflare Agents · Cloudflare AI · AWS · Azure · Terraform</p>
         </div>
-
         <div class="group rounded-xl border border-zinc-800/60 bg-[#0C0C0E] p-5 hover:border-emerald-500/20 transition-all duration-300 reveal">
           <div class="flex items-center justify-between mb-3">
             <span class="font-display font-bold text-sm">工具链 / 多媒体</span>
@@ -463,10 +474,8 @@
           </div>
           <p class="text-zinc-500 text-xs leading-relaxed">Turborepo · Vite · oxlint · Remotion · ElevenLabs</p>
         </div>
-
       </div>
 
-      <!-- Total count -->
       <div class="mt-10 text-center reveal">
         <span class="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-zinc-800/60 bg-zinc-900/40 text-sm text-zinc-500 font-mono">
           共计 <span class="text-emerald-400 font-semibold">54+</span> 项技术，持续增长中
@@ -476,8 +485,74 @@
   </section>
 
 
+  <!-- ==================== GITHUB REPO ==================== -->
+  <section class="py-24 lg:py-32 border-t border-zinc-800/40 bg-[#0D0D0F]">
+    <div class="max-w-6xl mx-auto px-5">
+      <div class="reveal">
+        <p class="font-mono text-xs text-emerald-400 tracking-widest uppercase mb-4">开源项目</p>
+        <h2 class="font-display font-bold text-3xl lg:text-4xl tracking-tight mb-3">在 GitHub 上探索</h2>
+        <p class="text-zinc-400 text-lg font-light max-w-xl">查看源代码、提交 Issue、参与贡献，或者给项目一个 Star。</p>
+      </div>
+
+      <div class="mt-10 reveal">
+        <a href="https://github.com/midudev/autoskills" target="_blank"
+           class="group block rounded-2xl border border-zinc-800/60 bg-[#09090B] overflow-hidden hover:border-zinc-700 transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_16px_48px_rgba(0,0,0,0.4)]">
+
+          <!-- OG Image -->
+          <div class="relative overflow-hidden">
+            <img
+              src="https://autoskills.sh/og.jpg"
+              alt="autoskills — One command. Your entire AI skill stack. Installed."
+              class="w-full object-cover aspect-[2/1] group-hover:scale-[1.02] transition-transform duration-500"
+              loading="lazy"
+            />
+            <div class="absolute inset-0 bg-gradient-to-t from-[#09090B] via-transparent to-transparent"></div>
+          </div>
+
+          <!-- Info -->
+          <div class="px-6 pb-6 -mt-8 relative">
+            <div class="flex items-start justify-between gap-4">
+              <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-xl bg-zinc-800 flex items-center justify-center shrink-0">
+                  <svg class="w-5 h-5 text-zinc-300" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
+                </div>
+                <div>
+                  <h3 class="font-display font-bold text-lg">midudev/autoskills</h3>
+                  <p class="text-zinc-500 text-sm mt-0.5">一条命令，安装你的整套 AI 技能栈</p>
+                </div>
+              </div>
+
+              <!-- Star button -->
+              <div class="shrink-0 flex items-center gap-2 px-4 py-2 rounded-lg border border-zinc-800 bg-zinc-900/80 gh-shimmer group-hover:border-amber-500/30 group-hover:text-amber-400 transition-colors">
+                <svg class="w-4 h-4" viewBox="0 0 24 24" fill="currentColor"><path d="M12 .587l3.668 7.431L24 9.168l-6 5.858 1.417 8.268L12 19.771l-7.417 3.523L6 15.026 0 9.168l8.332-1.15z"/></svg>
+                <span class="font-display font-semibold text-sm">Star</span>
+              </div>
+            </div>
+
+            <!-- Meta -->
+            <div class="flex flex-wrap items-center gap-4 mt-4 text-xs text-zinc-500 font-mono">
+              <span class="flex items-center gap-1.5">
+                <span class="w-2.5 h-2.5 rounded-full bg-yellow-400/80"></span>
+                JavaScript
+              </span>
+              <span class="flex items-center gap-1.5">
+                <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87L18.18 22 12 18.27 5.82 22 7 14.14l-5-4.87 6.91-1.01z"/></svg>
+                Star 仓库获取最新动态
+              </span>
+              <span class="flex items-center gap-1.5">
+                <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 00-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0020 4.77 5.07 5.07 0 0019.91 1S18.73.65 16 2.48a13.38 13.38 0 00-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 005 4.77a5.44 5.44 0 00-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 009 18.13V22"/></svg>
+                开源 · CC BY-NC 4.0
+              </span>
+            </div>
+          </div>
+        </a>
+      </div>
+    </div>
+  </section>
+
+
   <!-- ==================== REQUIREMENTS ==================== -->
-  <section class="py-20 border-t border-zinc-800/40 bg-[#0D0D0F]">
+  <section class="py-20 border-t border-zinc-800/40">
     <div class="max-w-6xl mx-auto px-5">
       <div class="grid sm:grid-cols-2 gap-6">
         <div class="rounded-xl border border-zinc-800/60 bg-[#09090B] p-7 reveal">
@@ -509,11 +584,18 @@
       <p class="text-zinc-400 text-lg font-light max-w-md mx-auto mb-10">
         一条命令，即刻开始。
       </p>
-      <button onclick="navigator.clipboard.writeText('npx autoskills')"
-        class="inline-flex items-center gap-3 px-8 py-4 rounded-xl bg-emerald-500 text-[#09090B] font-display font-bold text-lg hover:bg-emerald-400 transition-all hover:shadow-[0_12px_40px_rgba(52,211,153,0.3)] hover:-translate-y-1 cursor-pointer">
-        <span class="font-mono text-base opacity-70">$</span>
-        npx autoskills
-      </button>
+      <div class="flex flex-wrap justify-center gap-4">
+        <button onclick="navigator.clipboard.writeText('npx autoskills')"
+          class="inline-flex items-center gap-3 px-8 py-4 rounded-xl bg-emerald-500 text-[#09090B] font-display font-bold text-lg hover:bg-emerald-400 transition-all hover:shadow-[0_12px_40px_rgba(52,211,153,0.3)] hover:-translate-y-1 cursor-pointer">
+          <span class="font-mono text-base opacity-70">$</span>
+          npx autoskills
+        </button>
+        <a href="https://github.com/midudev/autoskills" target="_blank"
+          class="inline-flex items-center gap-2.5 px-7 py-4 rounded-xl border border-zinc-800 text-zinc-200 font-display font-bold text-lg hover:border-zinc-700 hover:bg-zinc-900 transition-all hover:-translate-y-1">
+          <svg class="w-5 h-5" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
+          View on GitHub
+        </a>
+      </div>
     </div>
   </section>
 
@@ -526,6 +608,7 @@
       </a>
       <div class="flex items-center gap-6 text-sm text-zinc-600">
         <a href="https://autoskills.sh" target="_blank" class="hover:text-zinc-300 transition-colors">官网</a>
+        <a href="https://github.com/midudev/autoskills" target="_blank" class="hover:text-zinc-300 transition-colors">GitHub</a>
         <a href="https://skills.sh" target="_blank" class="hover:text-zinc-300 transition-colors">skills.sh</a>
         <a href="https://midu.dev" target="_blank" class="hover:text-zinc-300 transition-colors">midudev</a>
       </div>
